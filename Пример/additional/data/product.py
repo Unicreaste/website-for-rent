@@ -21,16 +21,18 @@ class Jobs(SqlAlchemyBase):
     __tablename__ = 'jobs'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    # team_leader = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    job = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    work_size = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    collaborators = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    start_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-    end_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
-    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
-    category = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("category.id"))
+    product_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    summ = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
+    using = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime)
+    img = sqlalchemy.Column(sqlalchemy.StdImageField(variations={"thumbnail": {'height': 400, 'width': 400}}),
+                               nullable=False)
+    id_User = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
-    team_leader = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
+
+
+
+
     user = orm.relation('User')
     categories = orm.relation("Category",
                               secondary="association",

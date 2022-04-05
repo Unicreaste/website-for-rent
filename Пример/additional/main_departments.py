@@ -7,7 +7,7 @@ from data.add_job import AddJobForm
 from data.depart_form import AddDepartForm
 from data.login_form import LoginForm
 from data.users import User
-from data.jobs import Jobs
+from data.product import Jobs
 from data.departments import Department
 from data.register import RegisterForm
 

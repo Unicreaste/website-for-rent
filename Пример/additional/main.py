@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect
 from data import db_session
-from data.jobs import Jobs, Category
+from data.product import Jobs, Category
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
