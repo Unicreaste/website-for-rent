@@ -212,7 +212,7 @@ def main():
             abort(404)
         return redirect('/')
 
-    app.run()
+    app.run(debug=True)
 
 
 if __name__ == '__main__':

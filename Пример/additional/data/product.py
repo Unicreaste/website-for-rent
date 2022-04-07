@@ -25,8 +25,7 @@ class Jobs(SqlAlchemyBase):
     summ = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
     using = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime)
-    img = sqlalchemy.Column(sqlalchemy.StdImageField(variations={"thumbnail": {'height': 400, 'width': 400}}),
-                               nullable=False)
+    img = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     id_User = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
 
