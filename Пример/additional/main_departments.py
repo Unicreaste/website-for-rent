@@ -45,7 +45,7 @@ def main():
         jobs = session.query(Jobs).all()
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("index.html", jobs=jobs, names=names, title='Work log')
+        return render_template("templates/index.html", jobs=jobs, names=names, title='Work log')
 
     @app.route('/logout')
     @login_required
@@ -212,7 +212,7 @@ def main():
             abort(404)
         return redirect('/')
 
-    app.run()
+    app.run(debug=True)
 
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ class User(SqlAlchemyBase, UserMixin):
     address = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.StdImageField(variations={"thumbnail": {'height': 100, 'width': 100}}), nullable=False)
+    avatar = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     jobs = orm.relation("Jobs", back_populates='user')
     departments = orm.relation("Department", back_populates='user')
