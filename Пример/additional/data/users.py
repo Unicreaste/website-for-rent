@@ -13,13 +13,11 @@ class User(SqlAlchemyBase, UserMixin):
     surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     tel_num = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    speciality = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     address = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    jobs = orm.relation("Jobs", back_populates='user')
     departments = orm.relation("Department", back_populates='user')
 
     def __repr__(self):

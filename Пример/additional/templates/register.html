@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Register Form</h1>
+<h1>Форма регистрации</h1>
 
 <form action="" method="post">
     {{ form.hidden_tag() }}
@@ -61,18 +61,9 @@
     {% endfor %}
     </p>
     <p>
-        {{ form.position.label }}<br>
-        {{ form.position(class="form-control") }}<br>
-        {% for error in form.position.errors %}
-    <p class="alert alert-danger" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
-    </p>
-    <p>
-        {{ form.speciality.label }}<br>
-        {{ form.speciality(class="form-control") }}<br>
-        {% for error in form.speciality.errors %}
+        {{ form.age.label }}<br>
+        {{ form.age(class="form-control") }}<br>
+        {% for error in form.age.errors %}
     <p class="alert alert-danger" role="alert">
         {{ error }}
     </p>

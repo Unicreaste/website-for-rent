@@ -23,16 +23,7 @@
             <td class="title" width="100px" bgcolor="#dddddd" align="center">Is finished</td>
         </tr>
         <tr class="my_row">
-            <td class="ordinary" bgcolor="#eeeeff">{{ job.job.capitalize() }}</td>
-            <td class="ordinary" bgcolor="#eeeeff">{{ names[job.team_leader][0] }} {{ names[job.team_leader][1] }}</td>
-            <td class="ordinary" bgcolor="#eeeeff" align="center">{{ job.work_size }} hours</td>
-            <td class="ordinary" bgcolor="#eeeeff" align="center">{{ job.collaborators }}</td>
-            <td class="ordinary" bgcolor="#eeeeff" align="center">{{ job.category }}</td>
-            {% if job.is_finished %}
-            <td class="ordinary" bgcolor="#eeffee" align="center">Finished</td>
-            {% else %}
-            <td class="ordinary" bgcolor="#ffeeff" align="center">Is not finished</td>
-            {% endif %}
+            <td class="ordinary" bgcolor="#eeeeff">{{ job.product_name.capitalize() }}</td>
         </tr>
 
     </table>

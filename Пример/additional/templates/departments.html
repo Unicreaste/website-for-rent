@@ -3,11 +3,11 @@
 {% block content %}
 <meta charset="UTF-8">
 
-<h2 align="center">List of Departments</h2>
+<h2 align="center">Список отделов</h2>
 {% if current_user.is_authenticated %}
 <p align="justify">
-    <a href="index" class="btn btn-secondary">Back to Jobs</a>
-    <a href="add_depart" class="btn btn-secondary">Add a Department</a></p>
+    <a href="index" class="btn btn-secondary">Вернуться к Работам</a>
+    <a href="add_depart" class="btn btn-secondary">Добавить отдел</a></p>
 {% endif %}
 {% for depart in departments %}
 <h3>Department # {{ depart.id }}</h3>
