@@ -28,14 +28,6 @@ class Jobs(SqlAlchemyBase):
     img = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     id_User = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
-
-
-
-
-    user = orm.relation('User')
     categories = orm.relation("Category",
                               secondary="association",
                               backref="jobs")
-
-    def __repr__(self):
-        return f'<Job> {self.job}'
