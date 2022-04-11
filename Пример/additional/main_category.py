@@ -3,7 +3,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from flask_restful import abort
 
 from data import db_session
-from data.add_job import AddJobForm
+from data.add_product import AddJobForm
 from data.depart_form import AddDepartForm
 from data.login_form import LoginForm
 from data.users import User
@@ -95,7 +95,7 @@ def main():
             db_sess.add(jobs)
             db_sess.commit()
             return redirect('/')
-        return render_template('addjob.html', title='Adding a job', form=add_form)
+        return render_template('addproduct.html', title='Adding a job', form=add_form)
 
     @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -129,7 +129,7 @@ def main():
                 return redirect('/')
             else:
                 abort(404)
-        return render_template('addjob.html', title='Job Edit', form=form)
+        return render_template('addproduct.html', title='Job Edit', form=form)
 
     @app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
     @login_required
