@@ -7,9 +7,11 @@ from data.add_job import AddJobForm
 from data.depart_form import AddDepartForm
 from data.login_form import LoginForm
 from data.users import User
-from data.product import Jobs
+from data.product import Product
 from data.departments import Department
 from data.register import RegisterForm
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -42,7 +44,7 @@ def main():
     @app.route("/index")
     def index():
         session = db_session.create_session()
-        jobs = session.query(Jobs).all()
+        jobs = session.query(Product).all()
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
         return render_template("index.html", jobs=jobs, names=names, title='Work log')
@@ -64,14 +66,17 @@ def main():
             if session.query(User).filter(User.email == form.email.data).first():
                 return render_template('register.html', title='Register', form=form,
                                        message="This user already exists")
+            f = form.avatar.data
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(app.static_folder, 'img', 'avatars', filename))
+
             user = User(
                 name=form.name.data,
                 surname=form.surname.data,
-                age=form.age.data,
-                position=form.position.data,
                 email=form.email.data,
-                speciality=form.speciality.data,
-                address=form.address.data
+                address=form.address.data,
+                tel_num=form.tel_num.data,
+                avatar=filename
             )
             user.set_password(form.password.data)
             session.add(user)

@@ -18,10 +18,7 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     avatar = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
-    departments = orm.relation("Department", back_populates='user')
-
-    def __repr__(self):
-        return f'<Colonist> {self.id} {self.surname} {self.name}'
+    products = orm.relation("Product", back_populates='user')
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
