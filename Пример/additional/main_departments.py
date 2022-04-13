@@ -142,14 +142,13 @@ def main():
     @login_required
     def job_delete(id):
         session = db_session.create_session()
-        # jobs = session.query(Jobs).filter(Jobs.id == id,
-        #                                   (Jobs.team_leader == current_user.id) | (current_user.id == 1)).first()
-        #
-        # if jobs:
-        #     session.delete(jobs)
-        #     session.commit()
-        # else:
-        #     abort(404)
+        jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
+
+        if jobs:
+            session.delete(jobs)
+            session.commit()
+        else:
+            abort(404)
         return redirect('/')
 
     @app.route('/add_depart', methods=['GET', 'POST'])
