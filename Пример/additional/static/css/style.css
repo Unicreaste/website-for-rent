@@ -4,6 +4,13 @@ td.title {
     font-size: 14pt;
     padding: 5px;
 }
+
+body {
+    background: url(фон.png);
+    -webkit-background-size: cover;
+    background-size: cover;
+    background-attachment: fixed;
+}
 td.ordinary {
     background-color: "#eeeeff";
     align: "center";
@@ -17,3 +24,15 @@ h4 {
 p {
     font-size: 14pt;
 }
+
+.login_form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-90%);
+}
+
+.Aphtorisate_title {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,50%)}
