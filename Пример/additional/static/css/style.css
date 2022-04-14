@@ -27,12 +27,22 @@ p {
 
 .login_form {
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
-    transform: translate(-50%,-90%);
+    transform: translate(-50%,-70%);
 }
 
 .Aphtorisate_title {
     position: absolute;
     left: 50%;
     transform: translate(-50%,50%)}
+
+
+form {
+    display: block;
+    border: 1px solid #28a745;
+    border-width: 10px;
+    border-style: outset;
+    border-radius: 0.5rem;
+    padding: 10px;
+}
