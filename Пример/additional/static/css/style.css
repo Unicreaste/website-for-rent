@@ -46,3 +46,16 @@ form {
     border-radius: 0.5rem;
     padding: 10px;
 }
+
+.title-reg-form{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,50%)}
+
+
+.register-form{
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%,-40%);
+}

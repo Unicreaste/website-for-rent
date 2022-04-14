@@ -33,7 +33,7 @@
     </table>
 </div>
 <br>
-{% if current_user.is_authenticated and current_user.id == 1  %}
+{% if current_user.is_authenticated %}
 <div>
     <a href="/jobs/{{ job.id }}" class="btn btn-warning">Изменить</a>
     <a href="/job_delete/{{ job.id }}" class="btn btn-danger">Удалить предложение</a>

@@ -84,67 +84,70 @@ def main():
             return redirect('/login')
         return render_template('register.html', title='Регистрация', form=form)
 
-    # @app.route('/addjob', methods=['GET', 'POST'])
-    # def addjob():
-    #     add_form = AddJobForm()
-    #     if add_form.validate_on_submit():
-    #         session = db_session.create_session()
-    #         jobs = Jobs(
-    #             job=add_form.job.data,
-    #             team_leader=add_form.team_leader.data,
-    #             work_size=add_form.work_size.data,
-    #             collaborators=add_form.collaborators.data,
-    #             is_finished=add_form.is_finished.data
-    #         )
-    #         session.add(jobs)
-    #         session.commit()
-    #         return redirect('/')
-    #     return render_template('addjob.html', title='Adding a job', form=add_form)
+    @app.route('/addproduct', methods=['GET', 'POST'])
+    def addproduct():
+        add_form = AddProductForm()
+        if add_form.validate_on_submit():
+            session = db_session.create_session()
+
+            f = add_form.img.data
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(app.static_folder, 'img', 'product_img', filename))
+
+            product = Product(
+                product_name=add_form.product_name.data,
+                summ=add_form.summ.data,
+                using=add_form.using.data,
+                date=add_form.date.data,
+                img=filename,
+                id_User=current_user.id
+            )
+            session.add(product)
+            session.commit()
+            return redirect('/')
+        return render_template('addproduct.html', title='Adding a job', form=add_form)
 
     @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
     @login_required
     def job_edit(id):
-        form = AddJobForm()
+        form = AddProductForm()
         if request.method == "GET":
             session = db_session.create_session()
-            # jobs = session.query(Jobs).filter(Jobs.id == id,
-            #                                   (Jobs.team_leader == current_user.id) | (current_user.id == 1)).first()
-            # if jobs:
-            #     form.job.data = jobs.job
-            #     form.team_leader.data = jobs.team_leader
-            #     form.work_size.data = jobs.work_size
-            #     form.collaborators.data = jobs.collaborators
-            #     form.is_finished.data = jobs.is_finished
-            # else:
-            #     abort(404)
+            jobs = session.query(Product).filter(Product.id == id | (current_user.id == 1)).first()
+            if jobs:
+                form.job.data = jobs.job
+                form.team_leader.data = jobs.team_leader
+                form.work_size.data = jobs.work_size
+                form.collaborators.data = jobs.collaborators
+                form.is_finished.data = jobs.is_finished
+            else:
+                abort(404)
         if form.validate_on_submit():
             session = db_session.create_session()
-            # jobs = session.query(Jobs).filter(Jobs.id == id,
-            #                                   (Jobs.team_leader == current_user.id) | (current_user.id == 1)).first()
-            # if jobs:
-            #     jobs.job = form.job.data
-            #     jobs.team_leader = form.team_leader.data
-            #     jobs.work_size = form.work_size.data
-            #     jobs.collaborators = form.collaborators.data
-            #     jobs.is_finished = form.is_finished.data
-            #     session.commit()
-            #     return redirect('/')
-            # else:
-            #     abort(404)
-        return render_template('addjob.html', title='Job Edit', form=form)
+            jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
+            if jobs:
+                jobs.job = form.job.data
+                jobs.team_leader = form.team_leader.data
+                jobs.work_size = form.work_size.data
+                jobs.collaborators = form.collaborators.data
+                jobs.is_finished = form.is_finished.data
+                session.commit()
+                return redirect('/')
+            else:
+                abort(404)
+        return render_template('addproduct.html', title='Job Edit', form=form)
 
     @app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
     @login_required
     def job_delete(id):
         session = db_session.create_session()
-        # jobs = session.query(Jobs).filter(Jobs.id == id,
-        #                                   (Jobs.team_leader == current_user.id) | (current_user.id == 1)).first()
-        #
-        # if jobs:
-        #     session.delete(jobs)
-        #     session.commit()
-        # else:
-        #     abort(404)
+        jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
+
+        if jobs:
+            session.delete(jobs)
+            session.commit()
+        else:
+            abort(404)
         return redirect('/')
 
     @app.route('/add_depart', methods=['GET', 'POST'])
@@ -163,13 +166,14 @@ def main():
             return redirect('/')
         return render_template('add_depart.html', title='Adding a Department', form=add_form)
 
-    @app.route("/departments")
+    @app.route("/my_products")
     def depart():
+
         session = db_session.create_session()
-        departments = session.query(Department).all()
+        product = session.query(Product).filter(current_user.id == Product.id_User)
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("departments.html", departments=departments, names=names, title='List of Departments')
+        return render_template("my_product_index.html", jobs=product, names=names, title='List of Departments')
 
     @app.route('/departments/<int:id>', methods=['GET', 'POST'])
     @login_required
