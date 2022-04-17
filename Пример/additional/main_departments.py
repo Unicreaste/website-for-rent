@@ -39,7 +39,7 @@ def main():
                 login_user(user, remember=form.remember_me.data)
                 return redirect("/")
             return render_template('login.html', message="Wrong login or password", form=form)
-        return render_template('login.html', title='Authorization', form=form)
+        return render_template('login.html', title='Вход', form=form)
 
     @app.route("/")
     @app.route("/index")
@@ -48,7 +48,7 @@ def main():
         jobs = session.query(Product).all()
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("index.html", jobs=jobs, names=names, title='Work log')
+        return render_template("index.html", jobs=jobs, names=names, title='Предложения')
 
     @app.route('/logout')
     @login_required
@@ -61,11 +61,11 @@ def main():
         form = RegisterForm()
         if form.validate_on_submit():
             if form.password.data != form.password_again.data:
-                return render_template('register.html', title='Register', form=form,
+                return render_template('register.html', title='Регистрация', form=form,
                                        message="Passwords don't match")
             session = db_session.create_session()
             if session.query(User).filter(User.email == form.email.data).first():
-                return render_template('register.html', title='Register', form=form,
+                return render_template('register.html', title='Регистрация', form=form,
                                        message="This user already exists")
             f = form.avatar.data
             filename = secure_filename(f.filename)
@@ -106,7 +106,7 @@ def main():
             session.add(product)
             session.commit()
             return redirect('/')
-        return render_template('addproduct.html', title='Adding a job', form=add_form)
+        return render_template('addproduct.html', title='Добавление товара', form=add_form)
 
     @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -137,7 +137,7 @@ def main():
                 return redirect('/')
             else:
                 abort(404)
-        return render_template('addproduct.html', title='Job Edit', form=form)
+        return render_template('addproduct.html', title='Изменение товара', form=form)
 
     @app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
     @login_required
@@ -162,7 +162,7 @@ def main():
             return redirect('/')
         session = db_session.create_session()
         us_im = session.query(User)
-        return render_template('my_profile.html', users=us_im, form=add_form)
+        return render_template('my_profile.html', users=us_im, form=add_form, title='Профиль')
 
     @app.route("/my_products")
     def depart():
@@ -171,13 +171,22 @@ def main():
         product = session.query(Product).filter(current_user.id == Product.id_User)
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("my_product_index.html", jobs=product, names=names, title='List of Departments')
+        return render_template("my_product_index.html", jobs=product, names=names, title='Мои товары')
 
     @app.route('/in_development', methods=['GET', 'POST'])
     @login_required
     def in_development():
         session = db_session.create_session()
         return render_template("in_development.html", title='В разработке')
+
+    # @app.route("/search")
+    # def search():
+    #
+    #     session = db_session.create_session()
+    #     product = session.query(Product).filter()
+    #     users = session.query(User).all()
+    #     names = {name.id: (name.surname, name.name) for name in users}
+    #     return render_template("my_product_index.html", jobs=product, names=names, title='Товары')
 
     app.run(debug=True)
 
