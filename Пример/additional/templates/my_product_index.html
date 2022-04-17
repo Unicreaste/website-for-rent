@@ -3,7 +3,7 @@
 {% block content %}
 <meta charset="UTF-8">
 
-<h2 align="center">Предложения</h2>
+<h2 align="center">Мои товары</h2>
 {% if current_user.is_authenticated %}
 <p align="justify">
     <a href="addproduct" class="btn btn-secondary">Добавить предложение</a></p>
@@ -15,7 +15,7 @@
             <td>
                 <table>
                     <tr>
-                        <td><img src="{{ url_for('static', filename='img/product_img/image-5.jpg') }}"
+                        <td class="img_product"><img src="{{ url_for('static', filename='img/product_img/' + job.img) }}"
            alt="здесь должна была быть картинка, но не нашлась" width="150px"></td>
                         <td>
                             <div>

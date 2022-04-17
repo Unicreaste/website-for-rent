@@ -1,17 +1,18 @@
+import os
+
 from flask import Flask, render_template, redirect, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_restful import abort
+from werkzeug.utils import secure_filename
 
 from data import db_session
 from data.add_product import AddProductForm
 from data.depart_form import AddDepartForm
-from data.login_form import LoginForm
-from data.users import User
-from data.product import Product
 from data.departments import Department
+from data.login_form import LoginForm
+from data.product import Product
 from data.register import RegisterForm
-from werkzeug.utils import secure_filename
-import os
+from data.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -114,23 +115,24 @@ def main():
         if request.method == "GET":
             session = db_session.create_session()
             jobs = session.query(Product).filter(Product.id == id | (current_user.id == 1)).first()
+
             if jobs:
-                form.job.data = jobs.job
-                form.team_leader.data = jobs.team_leader
-                form.work_size.data = jobs.work_size
-                form.collaborators.data = jobs.collaborators
-                form.is_finished.data = jobs.is_finished
+                form.product_name.data = jobs.product_name
+                form.summ.data = jobs.summ,
+                form.using.data = jobs.using,
+                form.date.data = jobs.date,
+                form.img.data = jobs.img
             else:
                 abort(404)
         if form.validate_on_submit():
             session = db_session.create_session()
             jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
             if jobs:
-                jobs.job = form.job.data
-                jobs.team_leader = form.team_leader.data
-                jobs.work_size = form.work_size.data
-                jobs.collaborators = form.collaborators.data
-                jobs.is_finished = form.is_finished.data
+                form.product_name.data = jobs.product_name
+                form.summ.data = jobs.summ,
+                form.using.data = jobs.using,
+                form.date.data = jobs.date,
+                form.img.data = jobs.img
                 session.commit()
                 return redirect('/')
             else:
@@ -150,21 +152,17 @@ def main():
             abort(404)
         return redirect('/')
 
-    @app.route('/add_depart', methods=['GET', 'POST'])
+    @app.route('/my_profile', methods=['GET', 'POST'])
     def add_depart():
         add_form = AddDepartForm()
         if add_form.validate_on_submit():
             session = db_session.create_session()
-            depart = Department(
-                title=add_form.title.data,
-                chief=add_form.chief.data,
-                members=add_form.members.data,
-                email=add_form.email.data
-            )
             session.add(depart)
             session.commit()
             return redirect('/')
-        return render_template('add_depart.html', title='Adding a Department', form=add_form)
+        session = db_session.create_session()
+        us_im = session.query(User)
+        return render_template('my_profile.html', users=us_im, form=add_form)
 
     @app.route("/my_products")
     def depart():

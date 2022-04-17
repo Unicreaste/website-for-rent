@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta charset="UTF-8">
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h2 align="center">Профиль</h2>
+</head>
+<body>
+<form action="" method="post" class="profile">
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <p>
+        <h5>Имя:</h5>
+        <h5 style="color:#0000FF">{{ current_user.name }}</h5>
+    </p>
+    <p>
+        <h5>Фамилия:</h5>
+        <h5 style="color:#0000FF">{{ current_user.surname }}</h5>
+    </p>
+    <p>
+        <h5>Номер телефона:</h5>
+        <h5 style="color:#0000FF">{{ current_user.tel_num }}</h5>
+    </p>
+    <p>
+        <h5>Электронная почта:</h5>
+        <h5 style="color:#0000FF">{{ current_user.email }}</h5>
+    </p>
+    <p>
+        <h5>Аватар:</h5>
+        <td class="img_product" id="us_avatar"><img src="{{ url_for('static', filename='img/avatars/' + current_user.avatar) }}"
+            alt="здесь должна была быть картинка, но не нашлась" width="150px"></td>
+    </p>
+    <a type="button" href="/logout" class="btn btn-danger">Выйти</a>
+</form>
+</body>
+</html>
+{% endblock %}

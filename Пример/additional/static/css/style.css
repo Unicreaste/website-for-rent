@@ -59,3 +59,41 @@ form {
     left: 50%;
     transform: translate(-50%,-40%);
 }
+
+.add_product_form{
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%,-60%);
+}
+
+.add_product_title {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,50%)
+}
+
+.table_container{
+border: 1px solid #28a745;
+    border-width: 10px;
+    border-style: outset;
+    border-radius: 0.5rem;
+    padding: 10px;
+}
+
+.img_product{
+    border: 1px solid #28a745;
+    border-width: 10px;
+    border-style: outset;
+    border-radius: 0.5rem;
+    padding: 10px;
+    box-sizing: 10%
+}
+
+.profile{
+    position: absolute;
+    width: 500px;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%,-60%);
+    }
