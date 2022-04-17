@@ -173,51 +173,11 @@ def main():
         names = {name.id: (name.surname, name.name) for name in users}
         return render_template("my_product_index.html", jobs=product, names=names, title='List of Departments')
 
-    @app.route('/departments/<int:id>', methods=['GET', 'POST'])
+    @app.route('/in_development', methods=['GET', 'POST'])
     @login_required
-    def depart_edit(id):
-        form = AddDepartForm()
-        if request.method == "GET":
-            session = db_session.create_session()
-            depart = session.query(Department).filter(Department.id == id,
-                                                      (Department.chief == current_user.id) | (
-                                                              current_user.id == 1)).first()
-            if depart:
-                form.title.data = depart.title
-                form.chief.data = depart.chief
-                form.members.data = depart.members
-                form.email.data = depart.email
-            else:
-                abort(404)
-        if form.validate_on_submit():
-            session = db_session.create_session()
-            depart = session.query(Department).filter(Department.id == id,
-                                                      (Department.chief == current_user.id) | (
-                                                              current_user.id == 1)).first()
-            if depart:
-                depart.title = form.title.data
-                depart.chief = form.chief.data
-                depart.members = form.members.data
-                depart.email = form.email.data
-                session.commit()
-                return redirect('/')
-            else:
-                abort(404)
-        return render_template('add_depart.html', title='Department Edit', form=form)
-
-    @app.route('/depart_delete/<int:id>', methods=['GET', 'POST'])
-    @login_required
-    def depart_delete(id):
+    def in_development():
         session = db_session.create_session()
-        depart = session.query(Department).filter(Department.id == id,
-                                                  (Department.chief == current_user.id) | (
-                                                          current_user.id == 1)).first()
-        if depart:
-            session.delete(depart)
-            session.commit()
-        else:
-            abort(404)
-        return redirect('/')
+        return render_template("in_development.html", title='В разработке')
 
     app.run(debug=True)
 
