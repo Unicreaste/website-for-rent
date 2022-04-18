@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta charset="UTF-8">
+
+<!DOCTYPE html>
+<h2 align="center">Поиск</h2>
+{% if current_user.is_authenticated %}
+<p align="justify">
+{% endif %}
+{% for job in jobs %}
+<div class="table_container">
+    <table class="my_table">
+        <tr class="my_row">
+            <td>
+                <table>
+                    <tr>
+                        <td class="img_product"><img src="{{ url_for('static', filename='img/product_img/' + job.img) }}"
+           alt="здесь должна была быть картинка, но не нашлась" width="150px"></td>
+                        <td>
+                            <div>
+                                {{ job.product_name }}
+                            </div>
+                            <div>
+                                {{ job.summ }}
+                            </div>
+                            <div>
+                                <li class="breadcrumb-item"><a href="/product_info/{{ job.id }}">Узнать больше</a></li>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    </table>
+</div>
+<br>
+{% endif %}
+{% endfor %}
+{% endblock %}
