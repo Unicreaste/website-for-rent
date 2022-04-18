@@ -189,14 +189,16 @@ def main():
             abort(404)
         return redirect('/my_products')
 
-    # @app.route("/search")
-    # def search():
-    #
-    #     session = db_session.create_session()
-    #     product = session.query(Product).filter()
-    #     users = session.query(User).all()
-    #     names = {name.id: (name.surname, name.name) for name in users}
-    #     return render_template("my_product_index.html", jobs=product, names=names, title='Товары')
+    @app.route("/search", methods=['POST'])
+    def search():
+
+        session = db_session.create_session()
+        x = request.form['calc']
+        print(x)
+        product = session.query(Product).filter(x == Product.product_name)
+        users = session.query(User).all()
+        names = {name.id: (name.surname, name.name) for name in users}
+        return render_template("search.html", jobs=product, names=names, title='Товары')
 
     @app.route("/product_info/<int:id>")
     def product_info(id):
