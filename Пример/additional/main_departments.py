@@ -75,7 +75,6 @@ def main():
                 name=form.name.data,
                 surname=form.surname.data,
                 email=form.email.data,
-                address=form.address.data,
                 tel_num=form.tel_num.data,
                 avatar=filename
             )
@@ -99,6 +98,7 @@ def main():
                 product_name=add_form.product_name.data,
                 summ=add_form.summ.data,
                 using=add_form.using.data,
+                address=add_form.address.data,
                 img=filename,
                 id_User=current_user.id
             )
@@ -119,6 +119,7 @@ def main():
                 form.product_name.data = jobs.product_name
                 form.summ.data = jobs.summ
                 form.using.data = jobs.using
+                form.address.data = jobs.address
             else:
                 abort(404)
         if form.validate_on_submit():
@@ -128,6 +129,7 @@ def main():
                 jobs.product_name = form.product_name.data
                 jobs.summ = form.summ.data
                 jobs.using = form.using.data
+                jobs.address = jobs.address.data
                 session.commit()
                 return redirect('/')
             else:
@@ -196,11 +198,13 @@ def main():
     #     names = {name.id: (name.surname, name.name) for name in users}
     #     return render_template("my_product_index.html", jobs=product, names=names, title='Товары')
 
-    @app.route("/product_info/<int.id>")
-    def search(id):
+    @app.route("/product_info/<int:id>")
+    def product_info(id):
         session = db_session.create_session()
-        jobs = session.query(Product).filter(Product.id == id)
-        return render_template("my_product_index.html", title='Товары')
+        product = session.query(Product).filter(Product.id == id).first()
+        users = session.query(User).all()
+        names = {name.id: (name.surname, name.name) for name in users}
+        return render_template("product_info.html", job=product, names=names, title='Товары')
 
     app.run(debug=True)
 

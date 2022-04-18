@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta charset="UTF-8">
+    <h1 align="center">Информация</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <div class="table_container">
+    <table class="my_table">
+        <tr class="my_row">
+            <td>
+                <table>
+                    <tr>
+                        <td class="img_product"><img src="{{ url_for('static', filename='img/product_img/' + job.img) }}"
+           alt="здесь должна была быть картинка, но не нашлась" width="350px"></td>
+                        <td class="info">
+                            <div>
+                                <h5>Название:</h5>
+                                <h5 style="color:#0000FF">{{ job.product_name }}</h5>
+                            </div>
+                            <div>
+                                <h5>Цена:</h5>
+                                <h5 style="color:#0000FF">{{ job.summ }}</h5>
+                            </div>
+                            <div>
+                                <h5>Описание:</h5>
+                                <h5 style="color:#0000FF">{{ job.using }}</h5>
+                            </div>
+                            <div>
+                                <h5>Дата публикации:</h5>
+                                <h5 style="color:#0000FF">{{ job.date }}</h5>
+                            </div>
+                            <div>
+                                <h5>Адрес:</h5>
+                                <h5 style="color:#0000FF">{{ job.address }}</h5>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+    </table>
+</div>
+</head>
+<body>
+
+</body>
+</html>
+{% endblock %}

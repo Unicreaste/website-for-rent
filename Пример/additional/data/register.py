@@ -11,6 +11,5 @@ class RegisterForm(FlaskForm):
     surname = StringField('Фамилия', validators=[DataRequired()])
     name = StringField('Имя', validators=[DataRequired()])
     tel_num = IntegerField('Номер телефона', validators=[DataRequired()])
-    address = StringField('Адрес', validators=[DataRequired()])
     avatar = FileField('Аватар', validators=[DataRequired()])
     submit = SubmitField('Продолжить')

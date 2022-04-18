@@ -97,3 +97,7 @@ border: 1px solid #28a745;
     left: 50%;
     transform: translate(-50%,-60%);
     }
+
+.info {
+    position: absolute;
+}
