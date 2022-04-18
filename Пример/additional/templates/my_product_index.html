@@ -6,7 +6,6 @@
 <h2 align="center">Мои товары</h2>
 {% if current_user.is_authenticated %}
 <p align="justify">
-    <a href="addproduct" class="btn btn-secondary">Добавить предложение</a></p>
 {% endif %}
 {% for job in jobs %}
 <div class="table_container">
@@ -24,6 +23,9 @@
                             <div>
                                 {{ job.summ }}
                             </div>
+                            <div>
+                                <li class="breadcrumb-item"><a href="/product_info/{{ job.id }}">Узнать больше</a></li>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -36,7 +38,7 @@
 {% if current_user.is_authenticated %}
 <div>
     <a href="/jobs/{{ job.id }}" class="btn btn-warning">Изменить</a>
-    <a href="/job_delete/{{ job.id }}" class="btn btn-danger">Удалить предложение</a>
+    <a href="/my_job_delete/{{ job.id }}" class="btn btn-danger">Удалить предложение</a>
 </div>
 {% endif %}
 {% endfor %}

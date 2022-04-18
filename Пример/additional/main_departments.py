@@ -99,7 +99,6 @@ def main():
                 product_name=add_form.product_name.data,
                 summ=add_form.summ.data,
                 using=add_form.using.data,
-                date=add_form.date.data,
                 img=filename,
                 id_User=current_user.id
             )
@@ -114,25 +113,21 @@ def main():
         form = AddProductForm()
         if request.method == "GET":
             session = db_session.create_session()
-            jobs = session.query(Product).filter(Product.id == id | (current_user.id == 1)).first()
+            jobs = session.query(Product).filter(Product.id == id).first()
 
             if jobs:
                 form.product_name.data = jobs.product_name
-                form.summ.data = jobs.summ,
-                form.using.data = jobs.using,
-                form.date.data = jobs.date,
-                form.img.data = jobs.img
+                form.summ.data = jobs.summ
+                form.using.data = jobs.using
             else:
                 abort(404)
         if form.validate_on_submit():
             session = db_session.create_session()
-            jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
+            jobs = session.query(Product).filter(Product.id == id).first()
             if jobs:
-                form.product_name.data = jobs.product_name
-                form.summ.data = jobs.summ,
-                form.using.data = jobs.using,
-                form.date.data = jobs.date,
-                form.img.data = jobs.img
+                jobs.product_name = form.product_name.data
+                jobs.summ = form.summ.data
+                jobs.using = form.using.data
                 session.commit()
                 return redirect('/')
             else:
@@ -179,6 +174,19 @@ def main():
         session = db_session.create_session()
         return render_template("in_development.html", title='В разработке')
 
+    @app.route('/my_job_delete/<int:id>', methods=['GET', 'POST'])
+    @login_required
+    def my_job_delete(id):
+        session = db_session.create_session()
+        jobs = session.query(Product).filter(Product.id == id).first()
+
+        if jobs:
+            session.delete(jobs)
+            session.commit()
+        else:
+            abort(404)
+        return redirect('/my_products')
+
     # @app.route("/search")
     # def search():
     #
@@ -187,6 +195,12 @@ def main():
     #     users = session.query(User).all()
     #     names = {name.id: (name.surname, name.name) for name in users}
     #     return render_template("my_product_index.html", jobs=product, names=names, title='Товары')
+
+    @app.route("/product_info/<int.id>")
+    def search(id):
+        session = db_session.create_session()
+        jobs = session.query(Product).filter(Product.id == id)
+        return render_template("my_product_index.html", title='Товары')
 
     app.run(debug=True)
 
