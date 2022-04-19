@@ -109,3 +109,7 @@ border: 1px solid #28a745;
     display: block;
     padding: 1rem 1rem;
 }
+
+td.info {
+    padding-left: 60px;
+}
