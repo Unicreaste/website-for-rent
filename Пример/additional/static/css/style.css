@@ -46,6 +46,9 @@ form {
     border-radius: 0.5rem;
     padding: 10px;
 }
+#search{
+    border: None;
+}
 
 .title-reg-form{
     position: absolute;
@@ -100,4 +103,9 @@ border: 1px solid #28a745;
 
 .info {
     position: absolute;
+}
+
+.nav-link {
+    display: block;
+    padding: 1rem 1rem;
 }

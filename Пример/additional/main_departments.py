@@ -191,11 +191,9 @@ def main():
 
     @app.route("/search", methods=['POST'])
     def search():
-
         session = db_session.create_session()
-        x = request.form['calc']
-        print(x)
-        product = session.query(Product).filter(x == Product.product_name)
+        x = request.form["calc"]
+        product = session.query(Product).filter(x == Product.product_name).all()
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
         return render_template("search.html", jobs=product, names=names, title='Товары')
