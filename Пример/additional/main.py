@@ -97,7 +97,7 @@ def main():
                 product_name=add_form.product_name.data,
                 summ=add_form.summ.data,
                 using=add_form.using.data,
-                address=add_form.address.data,
+                contact=add_form.contact.data,
                 img=filename,
                 id_User=current_user.id
             )
@@ -118,7 +118,7 @@ def main():
                 form.product_name.data = jobs.product_name
                 form.summ.data = jobs.summ
                 form.using.data = jobs.using
-                form.address.data = jobs.address
+                form.contact.data = jobs.contact
             else:
                 abort(404)
         if form.validate_on_submit():
@@ -128,7 +128,7 @@ def main():
                 jobs.product_name = form.product_name.data
                 jobs.summ = form.summ.data
                 jobs.using = form.using.data
-                jobs.address = jobs.address.data
+                form.contact.data = jobs.contact
                 session.commit()
                 return redirect('/')
             else:

@@ -8,6 +8,6 @@ class AddProductForm(FlaskForm):
     summ = IntegerField('Цена', validators=[DataRequired()])
     using = TextAreaField('Описание или примечания к товару', validators=[DataRequired()])
     img = FileField('Фото товара', validators=[DataRequired()])
-    address = StringField('Адрес', validators=[DataRequired()])
+    contact = StringField('Связь с вами(почта или номер телефона)', validators=[DataRequired()])
 
     submit = SubmitField('Submit')
