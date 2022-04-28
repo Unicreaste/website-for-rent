@@ -20,194 +20,190 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def main():
-    db_session.global_init("db/mars_explorer.sqlite")
+db_session.global_init("db/mars_explorer.sqlite")
 
-    @login_manager.user_loader
-    def load_user(user_id):
+@login_manager.user_loader
+def load_user(user_id):
+    session = db_session.create_session()
+    return session.query(User).get(user_id)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
         session = db_session.create_session()
-        return session.query(User).get(user_id)
+        user = session.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login.html', message="Wrong login or password", form=form)
+    return render_template('login.html', title='Вход', form=form)
 
-    @app.route('/login', methods=['GET', 'POST'])
-    def login():
-        form = LoginForm()
-        if form.validate_on_submit():
-            session = db_session.create_session()
-            user = session.query(User).filter(User.email == form.email.data).first()
-            if user and user.check_password(form.password.data):
-                login_user(user, remember=form.remember_me.data)
-                return redirect("/")
-            return render_template('login.html', message="Wrong login or password", form=form)
-        return render_template('login.html', title='Вход', form=form)
+@app.route("/")
+@app.route("/index")
+def index():
+    session = db_session.create_session()
+    jobs = session.query(Product).all()
+    users = session.query(User).all()
+    names = {name.id: (name.surname, name.name) for name in users}
+    return render_template("index.html", jobs=jobs, names=names, title='АрендТор')
 
-    @app.route("/")
-    @app.route("/index")
-    def index():
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register.html', title='Регистрация', form=form,
+                                   message="Passwords don't match")
         session = db_session.create_session()
-        jobs = session.query(Product).all()
-        users = session.query(User).all()
-        names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("index.html", jobs=jobs, names=names, title='АрендТор')
+        if session.query(User).filter(User.email == form.email.data).first():
+            return render_template('register.html', title='Регистрация', form=form,
+                                   message="This user already exists")
+        f = form.avatar.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(app.static_folder, 'img', 'avatars', filename))
 
-    @app.route('/logout')
-    @login_required
-    def logout():
-        logout_user()
-        return redirect("/")
+        user = User(
+            name=form.name.data,
+            surname=form.surname.data,
+            email=form.email.data,
+            tel_num=form.tel_num.data,
+            avatar=filename
+        )
+        user.set_password(form.password.data)
+        session.add(user)
+        session.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Регистрация', form=form)
 
-    @app.route('/register', methods=['GET', 'POST'])
-    def reqister():
-        form = RegisterForm()
-        if form.validate_on_submit():
-            if form.password.data != form.password_again.data:
-                return render_template('register.html', title='Регистрация', form=form,
-                                       message="Passwords don't match")
-            session = db_session.create_session()
-            if session.query(User).filter(User.email == form.email.data).first():
-                return render_template('register.html', title='Регистрация', form=form,
-                                       message="This user already exists")
-            f = form.avatar.data
-            filename = secure_filename(f.filename)
-            f.save(os.path.join(app.static_folder, 'img', 'avatars', filename))
-
-            user = User(
-                name=form.name.data,
-                surname=form.surname.data,
-                email=form.email.data,
-                tel_num=form.tel_num.data,
-                avatar=filename
-            )
-            user.set_password(form.password.data)
-            session.add(user)
-            session.commit()
-            return redirect('/login')
-        return render_template('register.html', title='Регистрация', form=form)
-
-    @app.route('/addproduct', methods=['GET', 'POST'])
-    def addproduct():
-        add_form = AddProductForm()
-        if add_form.validate_on_submit():
-            session = db_session.create_session()
-
-            f = add_form.img.data
-            filename = secure_filename(f.filename)
-            f.save(os.path.join(app.static_folder, 'img', 'product_img', filename))
-
-            product = Product(
-                product_name=add_form.product_name.data,
-                summ=add_form.summ.data,
-                using=add_form.using.data,
-                contact=add_form.contact.data,
-                img=filename,
-                id_User=current_user.id
-            )
-            session.add(product)
-            session.commit()
-            return redirect('/')
-        return render_template('addproduct.html', title='Добавление товара', form=add_form)
-
-    @app.route('/jobs/<int:id>', methods=['GET', 'POST'])
-    @login_required
-    def product_edit(id):
-        form = AddProductForm()
-        if request.method == "GET":
-            session = db_session.create_session()
-            jobs = session.query(Product).filter(Product.id == id).first()
-
-            if jobs:
-                form.product_name.data = jobs.product_name
-                form.summ.data = jobs.summ
-                form.using.data = jobs.using
-                form.contact.data = jobs.contact
-            else:
-                abort(404)
-        if form.validate_on_submit():
-            session = db_session.create_session()
-            jobs = session.query(Product).filter(Product.id == id).first()
-            if jobs:
-                jobs.product_name = form.product_name.data
-                jobs.summ = form.summ.data
-                jobs.using = form.using.data
-                form.contact.data = jobs.contact
-                session.commit()
-                return redirect('/')
-            else:
-                abort(404)
-        return render_template('addproduct.html', title='Изменение товара', form=form)
-
-    @app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
-    @login_required
-    def product_delete(id):
+@app.route('/addproduct', methods=['GET', 'POST'])
+def addproduct():
+    add_form = AddProductForm()
+    if add_form.validate_on_submit():
         session = db_session.create_session()
-        jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
 
-        if jobs:
-            session.delete(jobs)
-            session.commit()
-        else:
-            abort(404)
+        f = add_form.img.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(app.static_folder, 'img', 'product_img', filename))
+
+        product = Product(
+            product_name=add_form.product_name.data,
+            summ=add_form.summ.data,
+            using=add_form.using.data,
+            contact=add_form.contact.data,
+            img=filename,
+            id_User=current_user.id
+        )
+        session.add(product)
+        session.commit()
         return redirect('/')
+    return render_template('addproduct.html', title='Добавление товара', form=add_form)
 
-    @app.route('/my_profile', methods=['GET', 'POST'])
-    def profile():
-        add_form = AddDepartForm()
-        if add_form.validate_on_submit():
-            session = db_session.create_session()
-            session.add(depart)
-            session.commit()
-            return redirect('/')
-        session = db_session.create_session()
-        us_im = session.query(User)
-        return render_template('my_profile.html', users=us_im, form=add_form, title='Профиль')
-
-    @app.route("/my_products")
-    def depart():
-
-        session = db_session.create_session()
-        product = session.query(Product).filter(current_user.id == Product.id_User)
-        users = session.query(User).all()
-        names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("my_product_index.html", jobs=product, names=names, title='Мои товары')
-
-    @app.route('/in_development', methods=['GET', 'POST'])
-    @login_required
-    def in_development():
-        return render_template("in_development.html", title='В разработке')
-
-    @app.route('/my_job_delete/<int:id>', methods=['GET', 'POST'])
-    @login_required
-    def my_product_delete(id):
+@app.route('/jobs/<int:id>', methods=['GET', 'POST'])
+@login_required
+def product_edit(id):
+    form = AddProductForm()
+    if request.method == "GET":
         session = db_session.create_session()
         jobs = session.query(Product).filter(Product.id == id).first()
 
         if jobs:
-            session.delete(jobs)
-            session.commit()
+            form.product_name.data = jobs.product_name
+            form.summ.data = jobs.summ
+            form.using.data = jobs.using
+            form.contact.data = jobs.contact
         else:
             abort(404)
-        return redirect('/my_products')
-
-    @app.route("/search", methods=['POST'])
-    def search():
+    if form.validate_on_submit():
         session = db_session.create_session()
-        q = request.args.get('q')
-        text = request.form["calc"]
-        product = session.query(Product).filter(Product.product_name.contains(q) | Product.using.contains(q)).all()
-        users = session.query(User).all()
-        names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("search.html", jobs=product, names=names, title='Товары')
+        jobs = session.query(Product).filter(Product.id == id).first()
+        if jobs:
+            jobs.product_name = form.product_name.data
+            jobs.summ = form.summ.data
+            jobs.using = form.using.data
+            form.contact.data = jobs.contact
+            session.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('addproduct.html', title='Изменение товара', form=form)
 
-    @app.route("/product_info/<int:id>")
-    def product_info(id):
+@app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def product_delete(id):
+    session = db_session.create_session()
+    jobs = session.query(Product).filter(Product.id == id, (current_user.id == 1)).first()
+
+    if jobs:
+        session.delete(jobs)
+        session.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+@app.route('/my_profile', methods=['GET', 'POST'])
+def profile():
+    add_form = AddDepartForm()
+    if add_form.validate_on_submit():
         session = db_session.create_session()
-        product = session.query(Product).filter(Product.id == id).first()
-        users = session.query(User).all()
-        names = {name.id: (name.surname, name.name) for name in users}
-        return render_template("product_info.html", job=product, names=names, title='Товары')
+        session.add(depart)
+        session.commit()
+        return redirect('/')
+    session = db_session.create_session()
+    us_im = session.query(User)
+    return render_template('my_profile.html', users=us_im, form=add_form, title='Профиль')
 
-    app.run(debug=True)
+@app.route("/my_products")
+def depart():
+
+    session = db_session.create_session()
+    product = session.query(Product).filter(current_user.id == Product.id_User)
+    users = session.query(User).all()
+    names = {name.id: (name.surname, name.name) for name in users}
+    return render_template("my_product_index.html", jobs=product, names=names, title='Мои товары')
+
+@app.route('/in_development', methods=['GET', 'POST'])
+@login_required
+def in_development():
+    return render_template("in_development.html", title='В разработке')
+
+@app.route('/my_job_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def my_product_delete(id):
+    session = db_session.create_session()
+    jobs = session.query(Product).filter(Product.id == id).first()
+
+    if jobs:
+        session.delete(jobs)
+        session.commit()
+    else:
+        abort(404)
+    return redirect('/my_products')
+
+@app.route("/search", methods=['POST'])
+def search():
+    session = db_session.create_session()
+    q = request.args.get('q')
+    text = request.form["calc"]
+    product = session.query(Product).filter(Product.product_name.contains(q) | Product.using.contains(q)).all()
+    users = session.query(User).all()
+    names = {name.id: (name.surname, name.name) for name in users}
+    return render_template("search.html", jobs=product, names=names, title='Товары')
+
+@app.route("/product_info/<int:id>")
+def product_info(id):
+    session = db_session.create_session()
+    product = session.query(Product).filter(Product.id == id).first()
+    users = session.query(User).all()
+    names = {name.id: (name.surname, name.name) for name in users}
+    return render_template("product_info.html", job=product, names=names, title='Товары')
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-    main()
