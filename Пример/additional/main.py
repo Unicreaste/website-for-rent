@@ -35,7 +35,9 @@ def login():
         user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
+            session.close()
             return redirect("/")
+        session.close()
         return render_template('login.html', message="Wrong login or password", form=form)
     return render_template('login.html', title='Вход', form=form)
 
@@ -63,6 +65,7 @@ def reqister():
                                    message="Passwords don't match")
         session = db_session.create_session()
         if session.query(User).filter(User.email == form.email.data).first():
+            session.close()
             return render_template('register.html', title='Регистрация', form=form,
                                    message="This user already exists")
         f = form.avatar.data
@@ -79,6 +82,7 @@ def reqister():
         user.set_password(form.password.data)
         session.add(user)
         session.commit()
+        session.close()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
 
@@ -102,6 +106,7 @@ def addproduct():
         )
         session.add(product)
         session.commit()
+        session.close()
         return redirect('/')
     return render_template('addproduct.html', title='Добавление товара', form=add_form)
 
@@ -132,6 +137,7 @@ def product_edit(id):
             return redirect('/')
         else:
             abort(404)
+    session.close()
     return render_template('addproduct.html', title='Изменение товара', form=form)
 
 @app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
@@ -145,6 +151,7 @@ def product_delete(id):
         session.commit()
     else:
         abort(404)
+    session.close()
     return redirect('/')
 
 @app.route('/my_profile', methods=['GET', 'POST'])
