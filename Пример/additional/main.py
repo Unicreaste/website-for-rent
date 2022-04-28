@@ -48,6 +48,7 @@ def index():
     jobs = session.query(Product).all()
     users = session.query(User).all()
     names = {name.id: (name.surname, name.name) for name in users}
+    session.close()
     return render_template("index.html", jobs=jobs, names=names, title='АрендТор')
 
 @app.route('/logout')
@@ -137,7 +138,7 @@ def product_edit(id):
             return redirect('/')
         else:
             abort(404)
-    session.close()
+        session.close()
     return render_template('addproduct.html', title='Изменение товара', form=form)
 
 @app.route('/job_delete/<int:id>', methods=['GET', 'POST'])
@@ -161,6 +162,7 @@ def profile():
         session = db_session.create_session()
         session.add(depart)
         session.commit()
+        session.close()
         return redirect('/')
     session = db_session.create_session()
     us_im = session.query(User)
