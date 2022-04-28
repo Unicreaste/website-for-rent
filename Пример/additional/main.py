@@ -54,7 +54,9 @@ def index():
 @app.route('/logout')
 @login_required
 def logout():
+    session = db_session.create_session()
     logout_user()
+    session.close()
     return redirect("/")
 
 @app.route('/register', methods=['GET', 'POST'])
