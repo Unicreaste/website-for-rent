@@ -190,8 +190,9 @@ def main():
     @app.route("/search", methods=['POST'])
     def search():
         session = db_session.create_session()
+        q = request.args.get('q')
         text = request.form["calc"]
-        product = session.query(Product).filter(text == Product.product_name).all()
+        product = session.query(Product).filter(Product.product_name.contains(q) | Product.using.contains(q)).all()
         users = session.query(User).all()
         names = {name.id: (name.surname, name.name) for name in users}
         return render_template("search.html", jobs=product, names=names, title='Товары')
