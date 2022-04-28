@@ -137,6 +137,7 @@ def product_edit(id):
             jobs.using = form.using.data
             form.contact.data = jobs.contact
             session.commit()
+            session.close()
             return redirect('/')
         else:
             abort(404)
