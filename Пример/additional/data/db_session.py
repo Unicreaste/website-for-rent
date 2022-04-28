@@ -20,7 +20,7 @@ def global_init(db_file):
     conn_str = f'sqlite:///{db_file.strip()}?check_same_thread=False'
     print(f"Подключение к базе данных по адресу {conn_str}")
 
-    engine = sa.create_engine(conn_str, echo=False)
+    engine = sa.create_engine('mysql+mysqldb://Unicreaste:3jA-pBm-rzx-JmZ@Unicreaste.mysql.pythonanywhere-services.com/Unicreaste$Rent', pool_recycle=280, echo=False)
     __factory = orm.sessionmaker(bind=engine)
 
     from . import __all_models

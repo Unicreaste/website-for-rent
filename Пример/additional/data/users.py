@@ -10,13 +10,13 @@ class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    surname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    surname = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
     tel_num = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    address = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    email = sqlalchemy.Column(sqlalchemy.String, index=True, unique=True, nullable=True)
-    hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    avatar = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    address = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
+    email = sqlalchemy.Column(sqlalchemy.String(200), index=True, unique=True, nullable=True)
+    hashed_password = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
+    avatar = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
 
     products = orm.relation("Product", back_populates='user')
 

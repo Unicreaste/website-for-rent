@@ -9,12 +9,12 @@ class Product(SqlAlchemyBase):
     __tablename__ = 'product'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    product_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    product_name = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
     summ = sqlalchemy.Column(sqlalchemy.Integer, nullable=True, default=0)
-    using = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    using = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
     date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.date.today)
-    img = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    contact = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    img = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
+    contact = sqlalchemy.Column(sqlalchemy.String(200), nullable=True)
     id_User = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('users.id'))
 
     user = orm.relation("User")
