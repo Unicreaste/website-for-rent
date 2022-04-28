@@ -164,6 +164,7 @@ def profile():
         return redirect('/')
     session = db_session.create_session()
     us_im = session.query(User)
+    session.close()
     return render_template('my_profile.html', users=us_im, form=add_form, title='Профиль')
 
 @app.route("/my_products")
@@ -173,6 +174,7 @@ def depart():
     product = session.query(Product).filter(current_user.id == Product.id_User)
     users = session.query(User).all()
     names = {name.id: (name.surname, name.name) for name in users}
+    session.close()
     return render_template("my_product_index.html", jobs=product, names=names, title='Мои товары')
 
 @app.route('/in_development', methods=['GET', 'POST'])
@@ -191,6 +193,7 @@ def my_product_delete(id):
         session.commit()
     else:
         abort(404)
+    session.close()
     return redirect('/my_products')
 
 @app.route("/search", methods=['POST'])
@@ -201,6 +204,7 @@ def search():
     product = session.query(Product).filter(Product.product_name.contains(q) | Product.using.contains(q)).all()
     users = session.query(User).all()
     names = {name.id: (name.surname, name.name) for name in users}
+    session.close()
     return render_template("search.html", jobs=product, names=names, title='Товары')
 
 @app.route("/product_info/<int:id>")
@@ -209,6 +213,7 @@ def product_info(id):
     product = session.query(Product).filter(Product.id == id).first()
     users = session.query(User).all()
     names = {name.id: (name.surname, name.name) for name in users}
+    session.close()
     return render_template("product_info.html", job=product, names=names, title='Товары')
 
 
